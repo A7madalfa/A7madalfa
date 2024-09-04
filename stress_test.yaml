@@ -1,0 +1,42 @@
+groups:
+- name: resource_usage_alerts
+  rules:
+  # CPU Usage Alert
+  - alert: HighCPUUsage
+    expr: 100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 70
+    for: 1m
+    labels:
+      severity: "critical"
+    annotations:
+      summary: "High CPU usage detected on instance {{ $labels.instance }}"
+      description: "CPU usage is above 70% for more than 1 minute on instance {{ $labels.instance }}."
+
+  # Memory Usage Alert
+  - alert: HighMemoryUsage
+    expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 70
+    for: 1m
+    labels:
+      severity: "critical"
+    annotations:
+      summary: "High Memory usage detected on instance {{ $labels.instance }}"
+      description: "Memory usage is above 70% for more than 1 minute on instance {{ $labels.instance }}."
+
+  # Disk Usage Alert
+  - alert: HighDiskUsage
+    expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100 > 70
+    for: 1m
+    labels:
+      severity: "critical"
+    annotations:
+      summary: "High Disk usage detected on instance {{ $labels.instance }}"
+      description: "Disk usage is above 70% for more than 1 minute on instance {{ $labels.instance }}."
+
+ # SQL Query Load Alert
+  - alert: HighSQLQueryLoad
+    expr: rate(mysql_global_status_queries[5m]) > 70
+    for: 1m
+    labels:
+      severity: "critical"
+    annotations:
+      summary: "High SQL query load detected on instance {{ $labels.instance }}"
+      description: "SQL query load is above 70 queries per second for more than 1 minute on instance {{ $labels.instance }}."
