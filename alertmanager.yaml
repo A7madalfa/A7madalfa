@@ -1,0 +1,20 @@
+global:
+  smtp_smarthost: 'ahmadalfalasi1111@gmail.com:587'  # Replace with your SMTP server and port
+  smtp_from: 'ahmadalfalasi1111@gmail.com'
+  smtp_require_tls: true  # Set to true if TLS is required; otherwise, set to false
+
+receivers:
+  - name: 'email-receiver'
+    email_configs:
+      - to: 'risk7mood191@gmail.com'
+        cc: 'cprofessional01@gmail.com'  # Add this line to specify the CC email address
+        send_resolved: true
+
+route:
+  receiver: 'email-receiver'
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+
+~                      
